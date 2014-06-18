@@ -1,5 +1,24 @@
 #include "_pcap.h"
-#include <stdlib.h>
+
+FILE *fopen_pcap (char *file_path) 
+{
+	FILE *fp = fopen (file_path, "rb");
+
+	if (fp != NULL) {
+		uint32_t magic;
+		fread (&magic, sizeof (uint32_t), 1, fp);
+		if (magic == MAGIC_1 || magic == MAGIC_2) {
+			return fp;
+		}
+		else {
+			fclose (fp);
+			return NULL;
+		}	
+	}
+	else 
+		return NULL;
+}
+
 
 /*GLOBAL HEADER FUNCTIONS*/
 static inline uint16_t fread_magic	(FILE *, uint32_t *);
